@@ -99,6 +99,7 @@ You might receive an error messages if any of your mappings have self-references
 
 - [Errors in the Vendors V2–to–msdyn_vendors table mapping](#error-vendor-map)
 - [Errors in the Customers V3–to–Accounts table mapping](#error-customer-map)
+- [Errors in the Product Categories-to-msdyn_productcategories table mapping](#error-product_categories-map)
 
 ## <a id="error-vendor-map"></a>Resolve errors in the Vendors V2–to–msdyn_vendors table mapping
 
@@ -216,3 +217,31 @@ If any rows in the customer table have values in the **ContactPersonID** and **I
     The initial synchronization of the rows is now completed.
 
 8. In the Finance and Operations app, turn change tracking back on for the **Customers V3** table.
+
+## <a id="#error-product_categories-map"></a>Resolve errors in the Product Categories-to-msdyn_productcategories table mapping
+
+Users might face errors while running initial sync for the **Product Categories**–to–**msdyn_productcategories**, which might be caused by the self-referential relationship within the Product Categories table. These errors occur because **ParentProductCategoryName** is a self-referencing column in the product category mapping. Errors in this area may also impact Product mapping through Dual-Write.
+
+The error messages that you receive will have the following form;
+*Couldn't resolve the guid for the field: msdyn_hierarchy,msdyn_parentproductcategory.msdyn_name. The lookup value was not found: <value>* 
+Here are some examples:
+- Couldn't resolve the guid for the field: msdyn_hierarchy,msdyn_parentproductcategory.msdyn_name. The lookup value was not found: Channel navigation hierarchy|Weight Benches.
+- Couldn't resolve the guid for the field: msdyn_hierarchy,msdyn_parentproductcategory.msdyn_name. The lookup value was not found: Channel navigation hierarchy|Apparel and Footwear.
+    
+Follow these steps to complete the initial synchronization.
+
+1.	In the Finance and Operations app, navigate to Dual-Write Mappings area and open the **Product categories (msdyn_productcategories) mapping**.
+
+    1. On the dual-write mapping page for **Product categories (msdyn_productcategories)**, on the Table mappings tab, on the search bar, look for “parentproductcategory”.
+    2. Search will bring 2 mappings if you are using the default template. Results may vary based on your actual setup.
+Search results for the default template would be;
+    - PARENTPRODUCTCATEGORYNAME – msdynparentproductcategory.msdyn_name
+    - PRODUCTCATEGORYHIERARCHYNAME – msdyn_parentproductcategory.msdyn_hierarchy.msdyn_name
+    3. For each result, select Actions, and then select Delete.
+    4. Save your changes to the mapping.
+    
+2.	Run initial synchronization for the **Product categories (msdyn_productcategories) mapping**. The initial synchronization should run successfully, without any errors.
+
+3.	Add the **ParentProductCategoryName** and **ProductCategoryHierarchyName** columns back to the **Product categories (msdyn_productcategories)** mapping, and then save the mapping.
+
+4.	Run initial synchronization again for the **Product categories (msdyn_productcategories)** mapping. 
